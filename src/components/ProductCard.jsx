@@ -1,15 +1,44 @@
 import { AddShoppingCart } from "@mui/icons-material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import cartReducer from "../slice/cartSlice";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import { addToCart, removeFromCart } from "../slice/cartSlice";
+import {
+  addToFavorites,
+  removeFromFavorites,
+} from "../slice/favoriteItemsSlice";
+import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 export const ProductCard = ({ product }) => {
+  const dispatch = useDispatch();
+  const cartItems = useSelector((state) => state.cart.items);
+  const favoriteItems = useSelector((state) => state.favoriteItems.items);
+
+  if (cartItems) console.log("Cart Items:", cartItems.length);
+
+  const [isFavorited, setIsFavorited] = useState(false);
+  const [isInCart, setIsInCart] = useState(false);
   const handleAddToWishlist = () => {
     console.log("Product added to wishlist:", product);
+    if (isFavorited) {
+      dispatch(removeFromFavorites(product.id));
+      setIsFavorited(false);
+      return;
+    }
+    dispatch(addToFavorites(product));
+    setIsFavorited(true);
   };
 
   const handleAddToCart = () => {
     console.log("Product added to cart:", product);
+    if (isInCart) {
+      dispatch(removeFromCart(product.id));
+      setIsInCart(false);
+      return;
+    }
+    dispatch(addToCart(product));
+    setIsInCart(true);
   };
   return (
     <div className="w-64 bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 flex flex-col relative">
@@ -32,14 +61,14 @@ export const ProductCard = ({ product }) => {
           onClick={handleAddToWishlist}
           className="mt-3 flex items-center justify-center gap-2 bg-green-600 text-white py-2 rounded-xl hover:bg-green-700 active:scale-95 transition-all"
         >
-          <FavoriteIcon />
+          {isFavorited ? <FavoriteIcon /> : <FavoriteBorderIcon />}
           Add To Wishlist
         </button>
         <button
           onClick={handleAddToCart}
           className="mt-3 flex items-center justify-center gap-2 bg-green-600 text-white py-2 rounded-xl hover:bg-green-700 active:scale-95 transition-all"
         >
-          <ShoppingCartIcon />
+          {isInCart ? <AddShoppingCart /> : <ShoppingCartIcon />}
           Add To Cart
         </button>
       </div>

@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { getAllProducts } from "../api/getAllProducts";
 import { ProductCard } from "../components/ProductCard";
 
-export const Home = () => {
+const Home = () => {
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
@@ -26,3 +26,5 @@ export const Home = () => {
     </>
   );
 };
+
+export default Home;
